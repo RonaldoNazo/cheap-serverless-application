@@ -1,0 +1,12 @@
+cluster_name         = "httpd"
+task_definition_name = "httpd"
+container_name       = "httpd"
+container_image      = "httpd:latest"
+container_port       = 80
+api_gateway_name     = "httpd"
+s3_bucket_name       = "httpd-ecs-website"
+lambda1_name         = "initializer"
+lambda2_name         = "trafficguard"
+lambda3_name         = "cleaner"
+domain_name          = "cheap.webapp.ustai.net"
+hosted_zone_name     = "ustai.net"
