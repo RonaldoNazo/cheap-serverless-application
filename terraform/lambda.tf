@@ -43,7 +43,7 @@ resource "aws_lambda_function" "lambda2" {
   source_code_hash = data.archive_file.lambda2.output_base64sha256
 
   runtime = "python3.12"
-  timeout = 20
+  timeout = 60
 
   environment {
     variables = {

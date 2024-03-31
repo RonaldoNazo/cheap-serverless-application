@@ -47,6 +47,7 @@ resource "aws_apigatewayv2_domain_name" "example" {
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
+  depends_on = [ aws_acm_certificate_validation.example ]
 }
 resource "aws_apigatewayv2_api_mapping" "example" {
   api_id      = aws_apigatewayv2_api.example.id

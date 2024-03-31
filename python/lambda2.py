@@ -52,21 +52,10 @@ def update_api_gateway_integration_uri(api_gateway_id,intagrationId,newUri):
     except Exception as e:
       print(e)
       return False
-    
-# Get api integration id
-def get_api_gateway_integration(rest_api_id):
-    try:
-        response = apigateway_client.get_integrations(
-        ApiId=rest_api_id
-        )
-        integrationId = response['Items'][0]['IntegrationId']
-        if response['Items'][0]['IntegrationType'] == "HTTP_PROXY":
-          return integrationId
-        else:
-          return None
-    except Exception as e:
-      print(e)
-      return None
+
+def check_task_if_ready(cluster_name, task_arn):
+    task_description = ecs_client.describe_tasks(cluster=cluster_name, tasks=[task_arn])
+    return task_description['tasks'][0]['lastStatus'] == 'RUNNING'
 
 def lambda_handler(event, context):
     try:
@@ -78,6 +67,12 @@ def lambda_handler(event, context):
 
         #Get the public ip of the nic
         public_ip = get_task_public_ip(get_task_eni(ecs_cluster, task_arn))
+
+        #Check not more than 50 seconds if the task is ready
+        for i in range(10):
+            if check_task_if_ready(ecs_cluster, task_arn):
+                break
+            time.sleep(5)
 
         update_api_gateway_integration_uri(api_gateway_id,httpIntegrationId,f'http://{public_ip}/')
         print('Integration Updated Successfully...')

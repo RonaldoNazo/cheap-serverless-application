@@ -65,4 +65,5 @@ resource "aws_s3_object" "object" {
   # For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
   # etag = "${md5(file("path/to/file"))}"
   etag = filemd5("../s3website/index.html")
+  content_type = "text/html"
 }
