@@ -3,7 +3,7 @@ resource "aws_apigatewayv2_api" "example" {
   protocol_type = "HTTP"
   cors_configuration {
     allow_methods = ["*"]
-    allow_origins = ["*"]
+    allow_origins = ["https://${var.domain_name}"]
   }
 }
 
