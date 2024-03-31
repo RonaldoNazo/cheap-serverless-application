@@ -29,6 +29,7 @@ resource "aws_route53_record" "www" {
   alias {
     name                   = local.api_gateway_domain_name
     zone_id                = local.api_gateway_hosted_zone_id
-    evaluate_target_health = true
+    evaluate_target_health = false # Otherwise ,route53 will trigger your website
   }
+
 }

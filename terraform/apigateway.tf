@@ -38,6 +38,21 @@ resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.example.id
   name        = "$default"
   auto_deploy = true
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.example.arn
+    format = jsonencode(
+      {
+        httpMethod     = "$context.httpMethod"
+        ip             = "$context.identity.sourceIp"
+        protocol       = "$context.protocol"
+        requestId      = "$context.requestId"
+        requestTime    = "$context.requestTime"
+        responseLength = "$context.responseLength"
+        routeKey       = "$context.routeKey"
+        status         = "$context.status"
+      }
+    )
+  }
 }
 resource "aws_apigatewayv2_domain_name" "example" {
   domain_name = var.domain_name
@@ -47,7 +62,7 @@ resource "aws_apigatewayv2_domain_name" "example" {
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
-  depends_on = [ aws_acm_certificate_validation.example ]
+  depends_on = [aws_acm_certificate_validation.example]
 }
 resource "aws_apigatewayv2_api_mapping" "example" {
   api_id      = aws_apigatewayv2_api.example.id
@@ -55,5 +70,8 @@ resource "aws_apigatewayv2_api_mapping" "example" {
   stage       = aws_apigatewayv2_stage.default.id
 }
 
-# CORS for apigateway
- 
+# apigateway logs
+resource "aws_cloudwatch_log_group" "example" {
+  name = "/aws/apigateway/${var.api_gateway_name}"
+}
+
