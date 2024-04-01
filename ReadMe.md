@@ -79,3 +79,27 @@ terraform apply
 ### How To Modify
 If you want to run your own application you would need to make the changes on the ECS Task definition for your own application, but this depends on your application, and specified on "ecs.tf" file.
 In case you have more complex achitecture (such as 3 tier application) , you need to figure it out yourself :P.
+
+## Drawbacks
+
+### Cyber Defence Search Engine
+There are some "Cyber Defence Search Engine" that do "probe checks" , so they send 1 Get request to each of your domains, and this causes your api gateway to be reached by sending a request to the lambda. And your infrastructure spins up for 15 minutes. (those checks happens once in 1-3 hours,they are not exactly the same).
+
+The requesters that i have seen are from : *.probe.onyphe.net 
+
+Solutions:
+- Contact them and request them to not send requests on your domains by setting wildcard *.domain.com
+- Deploy this infrastructure on REST API (i have set this on HTTP API for simplicity). By setting on REST API ,it provides a feature for "Resource Policy" ,there you can block access from their subnets/ips provided on their website.
+- Deploy a WAF , you can front your API Gateway with a WAF where you can block their IP addresses (this will cost 6$)
+
+Note: If you are deploying the smalles container, in case of a 15 triggers in 1 day , at the end of month it will add up to 1.6$ max
+
+
+### CloudWatch 15 min alarm state
+
+I have NO idea, there is no answer of why my cloud watch stays 15 minutes on alarm state even if i have the "period" = 300 seconds, there is no explanation, if you know what to do please contact me or open an issue or pull request on what to change!
+
+Those are my tests:
+1 min period => 7 min actual
+5 min period=> 15-16 min actual
+10 sec period=> 1 min 20 sec actual
