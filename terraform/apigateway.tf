@@ -30,7 +30,7 @@ resource "aws_apigatewayv2_route" "lambda" {
 }
 resource "aws_apigatewayv2_route" "http" {
   api_id    = aws_apigatewayv2_api.example.id
-  route_key = "ANY /"
+  route_key = "ANY /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.http.id}"
 }
 

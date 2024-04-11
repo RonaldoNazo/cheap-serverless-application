@@ -74,7 +74,7 @@ def lambda_handler(event, context):
                 break
             time.sleep(5)
 
-        update_api_gateway_integration_uri(api_gateway_id,httpIntegrationId,f'http://{public_ip}/')
+        update_api_gateway_integration_uri(api_gateway_id,httpIntegrationId,f'http://{public_ip}/'+'{proxy}')
         print('Integration Updated Successfully...')
         return False
     except Exception as e:
